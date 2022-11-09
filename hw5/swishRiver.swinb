@@ -1,0 +1,66 @@
+<div class="notebook">
+
+<div class="nb-cell program" name="p1">
+/* farmer goes alone */
+path([F1, W, G, C], [F2, W, G, C]):-
+       opp(F1, F2),
+      legal([F2, W, G, C]).
+
+/* the farmer takes the wolf */
+path([F1, F1, G, C], [F2, F2, G, C]):-
+       opp(F1, F2),
+      legal([F2, F2, G, C]).   
+
+/* the farmer takes the goat */
+path([F1, W, F1, C], [F2, W, F2, C]):-
+       opp(F1, F2),
+      legal([F2, W, F2, C]).
+
+/* the farmer take the cabbage */
+path([F1, W, G, F1],[F2, W, G, F2] ) :-
+       opp(F1, F2),
+      legal([F2, W, G, F2]). 
+
+
+
+
+/* W and G cannot be alone */
+illegal([F, W, W, C]):-opp(F, W).
+
+/* G and C cannot be alone */
+illegal([F, W, G, G]):- opp(F, G).
+
+%Legal states:
+
+legal(X):- illegal(X),!,fail. 
+legal(_).
+
+/*  north and south are opposite banks */
+opp(n, s).
+opp(s, n).
+
+/* go(X, P,L) succeeds if P is the path, without loops (cycles) through the graph corresponding to the search from the initial state X to the goal state G, specified by a the fact goal(G) in the knowledge base and L is the "the path so far", that is a list of nodes already visited.  */
+
+/* if the goal state and the initial state coincide then the path consists of (X), the list 
+with one node (regardless of L) */
+
+go(X, [X] _):- 
+      goal(X).
+
+/* otherwise, the path consists of adding  a node Y which can be attained from 
+the current node X,  such that Y has not been yet visited and then finding the path from Y 
+onwards to the goal state */
+
+go(X, [X|YPath], L):- 
+        path(X, Y), 
+ 	   not_yet_visted(Y, L), 
+        go(Y, YPath, [Y|L]).
+
+/* The predicate not_yet_visited can be simply the negation of the member predicate (as it would be in the maze and farmer's problem, or a little more complex for the blocks world problem) 
+ 
+
+Remark: Note that the above search builds the path in depth first order.
+*/
+</div>
+
+</div>
